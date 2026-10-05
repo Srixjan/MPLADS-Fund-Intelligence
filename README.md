@@ -96,10 +96,7 @@ Open [http://127.0.0.1:8000](http://127.0.0.1:8000) in your browser.
 
 ## 🌐 Deploy to Vercel
 
-1. Push this project to your GitHub repository.
-2. Sign in to [Vercel](https://vercel.com) and click **Add New Project**.
-3. Select your repository `MPLADS-Fund-Intelligence` and click **Deploy**.
-4. Vercel automatically detects `vercel.json` and provisions the live site with zero extra configuration.
+https://mplads-fund-intelligence.vercel.app/
 
 ---
 
