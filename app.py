@@ -4,7 +4,7 @@ import logging
 import pandas as pd
 import numpy as np
 from typing import Optional
-from fastapi import FastAPI, Query, HTTPException
+from fastapi import FastAPI, APIRouter, Query, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
@@ -17,7 +17,6 @@ logger = logging.getLogger("mplads_app")
 
 app = FastAPI(title="MPLADS Fund & Risk Intelligence", version="1.0.0")
 
-# Enable CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -26,20 +25,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Robust Base Directory discovery (works locally and in serverless containers)
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-if not os.path.exists(os.path.join(BASE_DIR, "data")):
-    parent = os.path.dirname(BASE_DIR)
-    if os.path.exists(os.path.join(parent, "data")):
-        BASE_DIR = parent
+def find_file(relative_path: str) -> Optional[str]:
+    base_current = os.path.dirname(os.path.abspath(__file__))
+    candidates = [
+        os.path.join(base_current, relative_path),
+        os.path.join(os.path.dirname(base_current), relative_path),
+        os.path.join(os.getcwd(), relative_path),
+        os.path.join("/var/task", relative_path),
+    ]
+    for c in candidates:
+        if os.path.exists(c):
+            return os.path.abspath(c)
+    return None
 
-STATIC_DIR = os.path.join(BASE_DIR, "static")
-PUBLIC_DIR = os.path.join(BASE_DIR, "public")
-MODEL_PATH = os.path.join(BASE_DIR, "models", "completion_risk_v1.pkl")
-PROCESSED_DF_PATH = os.path.join(BASE_DIR, "data", "processed", "df_cleaned.csv")
-CAT_SUMMARY_PATH = os.path.join(BASE_DIR, "data", "processed", "cat_summary.json")
-
-# In-memory fast cache
 DATA_CACHE = {
     "df": None,
     "category_summary": None,
@@ -52,18 +50,24 @@ def load_data_and_model():
         return
 
     # 1. Load Data
-    if os.path.exists(PROCESSED_DF_PATH):
-        df = pd.read_csv(PROCESSED_DF_PATH)
+    csv_path = find_file("data/processed/df_cleaned.csv")
+    json_path = find_file("data/processed/df_cleaned.json")
+    
+    if csv_path:
+        df = pd.read_csv(csv_path)
+    elif json_path:
+        df = pd.read_json(json_path)
     else:
         from main import build_final_dataframe
         df = build_final_dataframe()
 
     # 2. Load Model
-    if os.path.exists(MODEL_PATH):
+    model_path = find_file("models/completion_risk_v1.pkl")
+    if model_path:
         try:
-            model = CompletionRiskModel.load(MODEL_PATH)
+            model = CompletionRiskModel.load(model_path)
         except Exception as e:
-            logger.warning(f"Could not load saved model: {e}")
+            logger.warning(f"Could not load model: {e}")
             model = CompletionRiskModel(model="logistic_regression")
             model.train(df)
     else:
@@ -82,9 +86,10 @@ def load_data_and_model():
     state_medians = df.groupby("state")["utilization_rate"].median().to_dict()
 
     # 5. Category Summary
-    if os.path.exists(CAT_SUMMARY_PATH):
+    cat_path = find_file("data/processed/cat_summary.json")
+    if cat_path:
         try:
-            with open(CAT_SUMMARY_PATH, "r", encoding="utf-8") as f:
+            with open(cat_path, "r", encoding="utf-8") as f:
                 cat_summary = json.load(f)
         except Exception:
             cat_summary = []
@@ -110,9 +115,10 @@ class PredictRequest(BaseModel):
     total_disbursed_amount: float
     completed_work_count: int
 
-# --- API Endpoints ---
+# Router definitions
+router = APIRouter()
 
-@app.get("/api/overview")
+@router.get("/overview")
 def get_overview():
     cache = get_cache()
     df = cache["df"]
@@ -144,7 +150,7 @@ def get_overview():
         "states_count": int(df["state"].nunique())
     }
 
-@app.get("/api/states")
+@router.get("/states")
 def get_states_analytics():
     cache = get_cache()
     df = cache["df"]
@@ -165,7 +171,7 @@ def get_states_analytics():
     
     return states_df.to_dict(orient="records")
 
-@app.get("/api/mps")
+@router.get("/mps")
 def get_mps_directory(
     search: Optional[str] = Query(None),
     state: Optional[str] = Query(None),
@@ -219,12 +225,12 @@ def get_mps_directory(
         "data": records
     }
 
-@app.get("/api/categories")
+@router.get("/categories")
 def get_categories():
     cache = get_cache()
     return cache["category_summary"]
 
-@app.post("/api/predict")
+@router.post("/predict")
 def predict_risk(req: PredictRequest):
     cache = get_cache()
     model = cache["model"]
@@ -289,13 +295,18 @@ def predict_risk(req: PredictRequest):
         "risk_factors": risk_factors
     }
 
-# Mount static and public if available
-if os.path.exists(STATIC_DIR):
-    app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+# Register router on BOTH /api and root /
+app.include_router(router, prefix="/api")
+app.include_router(router)
+
+static_path = find_file("static")
+if static_path:
+    app.mount("/static", StaticFiles(directory=static_path), name="static")
 
 @app.get("/")
 def serve_index():
-    for p in [os.path.join(PUBLIC_DIR, "index.html"), os.path.join(STATIC_DIR, "index.html")]:
-        if os.path.exists(p):
-            return FileResponse(p)
-    return {"message": "MPLADS Fund Intelligence API Live. Access /api/overview or /api/states."}
+    for rel in ["public/index.html", "static/index.html"]:
+        f = find_file(rel)
+        if f:
+            return FileResponse(f)
+    return {"message": "MPLADS Fund Intelligence API Live."}

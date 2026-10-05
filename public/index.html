@@ -36,11 +36,7 @@
   --radius-lg: 14px;
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
   font-family: var(--font);
@@ -51,14 +47,12 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* App Container */
 .container {
   max-width: 1240px;
   margin: 0 auto;
   padding: 24px 20px 60px;
 }
 
-/* Top Header */
 .header {
   display: flex;
   align-items: center;
@@ -68,11 +62,7 @@ body {
   margin-bottom: 24px;
 }
 
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
+.brand { display: flex; align-items: center; gap: 12px; }
 
 .brand-badge {
   font-size: 0.72rem;
@@ -99,20 +89,9 @@ body {
   color: var(--text-muted);
 }
 
-.status-indicator {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
+.status-indicator { display: inline-flex; align-items: center; gap: 6px; }
+.status-dot { width: 6px; height: 6px; background-color: var(--accent-green); border-radius: 50%; }
 
-.status-dot {
-  width: 6px;
-  height: 6px;
-  background-color: var(--accent-green);
-  border-radius: 50%;
-}
-
-/* Segmented Tab Navigation */
 .tabs-nav {
   display: flex;
   gap: 4px;
@@ -137,26 +116,16 @@ body {
   transition: all 0.15s ease;
 }
 
-.tab-btn:hover {
-  color: var(--text-main);
-}
-
+.tab-btn:hover { color: var(--text-main); }
 .tab-btn.active {
   background: var(--surface-subtle);
   color: var(--text-main);
   box-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 
-/* Tab Panels */
-.tab-panel {
-  display: none;
-}
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
 
-.tab-panel.active {
-  display: block;
-}
-
-/* KPI Summary Cards */
 .kpi-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -187,13 +156,8 @@ body {
   color: var(--text-main);
 }
 
-.kpi-sub {
-  font-size: 0.75rem;
-  color: var(--text-dim);
-  margin-top: 4px;
-}
+.kpi-sub { font-size: 0.75rem; color: var(--text-dim); margin-top: 4px; }
 
-/* Content Cards & Sections */
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -209,32 +173,17 @@ body {
   margin-bottom: 16px;
 }
 
-.card-title {
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--text-main);
-}
+.card-title { font-size: 0.95rem; font-weight: 600; color: var(--text-main); }
+.card-desc { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
 
-.card-desc {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  margin-top: 2px;
-}
-
-/* Grid Columns */
 .grid-2 {
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 16px;
 }
 
-.chart-box {
-  height: 280px;
-  position: relative;
-  width: 100%;
-}
+.chart-box { height: 280px; position: relative; width: 100%; }
 
-/* Tables */
 .table-wrap {
   overflow-x: auto;
   border-radius: var(--radius);
@@ -257,10 +206,7 @@ th {
   white-space: nowrap;
 }
 
-th.num, td.num {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
+th.num, td.num { text-align: right; font-variant-numeric: tabular-nums; }
 
 td {
   padding: 10px 14px;
@@ -269,11 +215,8 @@ td {
   white-space: nowrap;
 }
 
-tbody tr:hover {
-  background: var(--surface-hover);
-}
+tbody tr:hover { background: var(--surface-hover); }
 
-/* Badges */
 .badge {
   display: inline-block;
   font-size: 0.72rem;
@@ -301,7 +244,6 @@ tbody tr:hover {
   border-color: var(--border);
 }
 
-/* Controls */
 .controls {
   display: flex;
   gap: 10px;
@@ -320,13 +262,8 @@ tbody tr:hover {
   outline: none;
 }
 
-.input:focus, .select:focus {
-  border-color: var(--border-focus);
-}
-
-.select option {
-  background: #18181b;
-}
+.input:focus, .select:focus { border-color: var(--border-focus); }
+.select option { background: #18181b; }
 
 .btn {
   background: var(--text-main);
@@ -341,9 +278,7 @@ tbody tr:hover {
   transition: opacity 0.15s;
 }
 
-.btn:hover {
-  opacity: 0.9;
-}
+.btn:hover { opacity: 0.9; }
 
 .btn-secondary {
   background: var(--surface-subtle);
@@ -351,16 +286,9 @@ tbody tr:hover {
   border: 1px solid var(--border);
 }
 
-.btn-secondary:hover:not(:disabled) {
-  background: var(--surface-hover);
-}
+.btn-secondary:hover:not(:disabled) { background: var(--surface-hover); }
+.btn-secondary:disabled { opacity: 0.4; cursor: not-allowed; }
 
-.btn-secondary:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-/* Table Footer / Pagination */
 .table-footer {
   display: flex;
   align-items: center;
@@ -370,13 +298,8 @@ tbody tr:hover {
   color: var(--text-muted);
 }
 
-.pagination {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
+.pagination { display: flex; align-items: center; gap: 8px; }
 
-/* Simulator Form */
 .sim-grid {
   display: grid;
   grid-template-columns: 1.1fr 1fr;
@@ -389,29 +312,11 @@ tbody tr:hover {
   gap: 14px;
 }
 
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
+.field { display: flex; flex-direction: column; gap: 5px; }
+.field label { font-size: 0.78rem; font-weight: 500; color: var(--text-muted); }
+.field-hint { font-size: 0.7rem; color: var(--accent-blue); font-family: var(--font-mono); }
+.field-full { grid-column: span 2; }
 
-.field label {
-  font-size: 0.78rem;
-  font-weight: 500;
-  color: var(--text-muted);
-}
-
-.field-hint {
-  font-size: 0.7rem;
-  color: var(--accent-blue);
-  font-family: var(--font-mono);
-}
-
-.field-full {
-  grid-column: span 2;
-}
-
-/* Result Box */
 .result-card {
   background: var(--surface-subtle);
   border: 1px solid var(--border);
@@ -428,17 +333,11 @@ tbody tr:hover {
   margin-bottom: 14px;
 }
 
-.status-tag {
-  font-size: 1.05rem;
-  font-weight: 600;
-}
-
+.status-tag { font-size: 1.05rem; font-weight: 600; }
 .status-tag.risk { color: var(--accent-rose); }
 .status-tag.track { color: var(--accent-green); }
 
-.prob-meter {
-  margin-bottom: 16px;
-}
+.prob-meter { margin-bottom: 16px; }
 
 .meter-track {
   height: 6px;
@@ -471,17 +370,8 @@ tbody tr:hover {
   border: 1px solid var(--border);
 }
 
-.stat-item .label {
-  font-size: 0.72rem;
-  color: var(--text-muted);
-}
-
-.stat-item .val {
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--text-main);
-  margin-top: 2px;
-}
+.stat-item .label { font-size: 0.72rem; color: var(--text-muted); }
+.stat-item .val { font-size: 0.95rem; font-weight: 600; color: var(--text-main); margin-top: 2px; }
 
 .factors-box h5 {
   font-size: 0.78rem;
@@ -506,7 +396,6 @@ tbody tr:hover {
   border-left: 2px solid var(--border-focus);
 }
 
-/* Callout */
 .callout {
   padding: 12px 16px;
   background: rgba(56, 189, 248, 0.05);
@@ -518,7 +407,6 @@ tbody tr:hover {
   line-height: 1.4;
 }
 
-/* Modal */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -557,7 +445,6 @@ tbody tr:hover {
 }
 
 .close-btn:hover { color: var(--text-main); }
-
 .d-none { display: none !important; }
 .mono { font-family: var(--font-mono); }
 
@@ -570,7 +457,6 @@ tbody tr:hover {
 </head>
 <body>
   <div class="container">
-    <!-- Top Header -->
     <header class="header">
       <div class="brand">
         <h1>MPLADS Analytics</h1>
@@ -585,7 +471,6 @@ tbody tr:hover {
       </div>
     </header>
 
-    <!-- Segmented Tab Navigation -->
     <nav class="tabs-nav">
       <button class="tab-btn active" data-tab="overview">Overview</button>
       <button class="tab-btn" data-tab="states">States</button>
@@ -909,7 +794,6 @@ tbody tr:hover {
     </section>
   </div>
 
-  <!-- Detail Modal -->
   <div class="modal-overlay d-none" id="modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -924,12 +808,44 @@ tbody tr:hover {
   </div>
 
   <script>
-// Inline JS to guarantee execution with zero CDN lag
+// Resilient API Fetch Helper with automatic URL prefix fallback
+async function fetchApi(path) {
+  const urls = [`/api${path}`, path];
+  for (const url of urls) {
+    try {
+      const res = await fetch(url);
+      if (res.ok) {
+        const data = await res.json();
+        if (data && typeof data === 'object') return data;
+      }
+    } catch (e) {
+      // try next fallback
+    }
+  }
+  throw new Error(`Failed to fetch ${path}`);
+}
+
+async function postApi(path, payload) {
+  const urls = [`/api${path}`, path];
+  for (const url of urls) {
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) return await res.json();
+    } catch (e) {
+      // try next fallback
+    }
+  }
+  throw new Error(`Failed to post to ${path}`);
+}
+
 let statesCache = [];
 let chartStates = null;
 let chartRisk = null;
 let chartCategories = null;
-
 let mpPage = 1;
 const mpLimit = 20;
 
@@ -1051,14 +967,13 @@ async function loadData() {
 }
 
 async function fetchOverview() {
-  const res = await fetch("/api/overview");
-  const d = await res.json();
+  const d = await fetchApi("/overview");
 
   document.getElementById("kpi-allocated").textContent = formatCrores(d.total_allocated);
   document.getElementById("kpi-disbursed").textContent = formatCrores(d.total_disbursed);
   document.getElementById("kpi-backlog").textContent = formatCrores(d.total_backlog);
-  document.getElementById("kpi-utilization").textContent = `${(d.avg_utilization_rate * 100).toFixed(1)}%`;
-  document.getElementById("kpi-median-sub").textContent = `Median: ${(d.median_utilization_rate * 100).toFixed(1)}%`;
+  document.getElementById("kpi-utilization").textContent = `${((d.avg_utilization_rate || 0) * 100).toFixed(1)}%`;
+  document.getElementById("kpi-median-sub").textContent = `Median: ${((d.median_utilization_rate || 0) * 100).toFixed(1)}%`;
 
   document.getElementById("kpi-risk-count").textContent = `${d.at_risk_count} / ${d.total_mps}`;
   document.getElementById("kpi-risk-pct").textContent = `${d.at_risk_percent}% at-risk`;
@@ -1070,8 +985,7 @@ async function fetchOverview() {
 }
 
 async function fetchStates() {
-  const res = await fetch("/api/states");
-  statesCache = await res.json();
+  statesCache = await fetchApi("/states");
 
   const stateFilter = document.getElementById("mp-state-filter");
   const simState = document.getElementById("sim-state");
@@ -1101,12 +1015,12 @@ function renderStatesTable(states) {
       <td class="num">${s.mp_count}</td>
       <td class="num">${formatCrores(s.total_allocated)}</td>
       <td class="num">${formatCrores(s.total_disbursed)}</td>
-      <td class="num"><strong>${(s.avg_utilization * 100).toFixed(1)}%</strong></td>
-      <td class="num">${(s.median_utilization * 100).toFixed(1)}%</td>
+      <td class="num"><strong>${((s.avg_utilization || 0) * 100).toFixed(1)}%</strong></td>
+      <td class="num">${((s.median_utilization || 0) * 100).toFixed(1)}%</td>
       <td class="num">${formatCrores(s.avg_backlog)}</td>
       <td>
         <span class="badge ${s.at_risk_pct > 50 ? 'badge-risk' : 'badge-track'}">
-          ${s.at_risk_pct.toFixed(0)}% (${s.at_risk_count}/${s.mp_count})
+          ${(s.at_risk_pct || 0).toFixed(0)}% (${s.at_risk_count}/${s.mp_count})
         </span>
       </td>
     </tr>
@@ -1115,7 +1029,7 @@ function renderStatesTable(states) {
 
 function filterStates(query) {
   const q = query.toLowerCase().trim();
-  renderStatesTable(statesCache.filter(s => s.state.toLowerCase().includes(q)));
+  renderStatesTable(statesCache.filter(s => (s.state || "").toLowerCase().includes(q)));
 }
 
 async function fetchMps() {
@@ -1135,8 +1049,7 @@ async function fetchMps() {
   if (state && state !== "All") params.append("state", state);
   if (risk && risk !== "all") params.append("risk_filter", risk);
 
-  const res = await fetch(`/api/mps?${params.toString()}`);
-  const r = await res.json();
+  const r = await fetchApi(`/mps?${params.toString()}`);
 
   renderMpsTable(r.data);
 
@@ -1168,7 +1081,7 @@ function renderMpsTable(mps) {
         <td>${mp.constituency || "—"}</td>
         <td class="num">${formatCrores(mp.allocated_amount)}</td>
         <td class="num">${formatCrores(mp.total_disbursed_amount)}</td>
-        <td class="num"><strong>${(mp.utilization_rate * 100).toFixed(1)}%</strong></td>
+        <td class="num"><strong>${((mp.utilization_rate || 0) * 100).toFixed(1)}%</strong></td>
         <td class="num">${formatCrores(mp.sanctioned_backlog)}</td>
         <td class="num">${mp.sanctioned_work_count} / ${mp.completed_work_count}</td>
         <td>
@@ -1199,7 +1112,7 @@ window.showMpModal = function(idx) {
       <span class="badge ${isAtRisk ? 'badge-risk' : 'badge-track'}" style="font-size: 0.85rem; padding: 4px 10px;">
         ${isAtRisk ? 'AT RISK' : 'ON TRACK'} (${mp.risk_score}% Probability)
       </span>
-      <span style="font-size: 0.78rem; color: var(--text-muted);">Utilization: ${(mp.utilization_rate * 100).toFixed(1)}%</span>
+      <span style="font-size: 0.78rem; color: var(--text-muted);">Utilization: ${((mp.utilization_rate || 0) * 100).toFixed(1)}%</span>
     </div>
     <div class="stat-row">
       <div class="stat-item"><div class="label">Allocated</div><div class="val">${formatCrores(mp.allocated_amount)}</div></div>
@@ -1217,8 +1130,7 @@ function closeModal() {
 }
 
 async function fetchCategories() {
-  const res = await fetch("/api/categories");
-  const cats = await res.json();
+  const cats = await fetchApi("/categories");
 
   const tbody = document.getElementById("cat-tbody");
   if (!cats || !cats.length) {
@@ -1254,12 +1166,7 @@ async function handleSimSubmit(e) {
   btn.textContent = "Computing...";
 
   try {
-    const res = await fetch("/api/predict", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-    const d = await res.json();
+    const d = await postApi("/predict", payload);
 
     document.getElementById("sim-placeholder").classList.add("d-none");
     const rBox = document.getElementById("sim-result-box");
@@ -1282,7 +1189,7 @@ async function handleSimSubmit(e) {
     document.getElementById("sim-util-val").textContent = `${d.metrics.utilization_pct}%`;
     document.getElementById("sim-median-val").textContent = `${d.metrics.state_median_pct}%`;
     document.getElementById("sim-backlog-val").textContent = formatCrores(d.metrics.sanctioned_backlog);
-    document.getElementById("sim-ratio-val").textContent = `${(d.metrics.completion_ratio * 100).toFixed(1)}%`;
+    document.getElementById("sim-ratio-val").textContent = `${((d.metrics.completion_ratio || 0) * 100).toFixed(1)}%`;
 
     document.getElementById("sim-factors").innerHTML = d.risk_factors.map(f => `<li>${f}</li>`).join("");
   } catch (err) {
@@ -1300,7 +1207,7 @@ function renderStatesBar(states) {
   const subset = [...valid.slice(0, 5), ...valid.slice(-5).reverse()];
 
   const labels = subset.map(s => s.state);
-  const data = subset.map(s => (s.avg_utilization * 100).toFixed(1));
+  const data = subset.map(s => ((s.avg_utilization || 0) * 100).toFixed(1));
   const colors = subset.map((s, idx) => idx < 5 ? "#34d399" : "#f87171");
 
   const ctx = document.getElementById("chart-states-bar").getContext("2d");
@@ -1339,7 +1246,7 @@ function renderRiskDoughnut(riskCount, trackCount) {
     data: {
       labels: ["At Risk", "On Track"],
       datasets: [{
-        data: [riskCount, trackCount],
+        data: [riskCount || 0, trackCount || 0],
         backgroundColor: ["#f87171", "#34d399"],
         borderWidth: 0
       }]
@@ -1362,8 +1269,8 @@ function renderCategoriesBar(cats) {
   if (!cats || !cats.length) return;
 
   const labels = cats.map(c => c.category);
-  const sanc = cats.map(c => (c.total_sanction_amount / 1e7).toFixed(2));
-  const disb = cats.map(c => (c.total_disbursed_amount / 1e7).toFixed(2));
+  const sanc = cats.map(c => ((c.total_sanction_amount || 0) / 1e7).toFixed(2));
+  const disb = cats.map(c => ((c.total_disbursed_amount || 0) / 1e7).toFixed(2));
 
   const ctx = document.getElementById("chart-categories-bar").getContext("2d");
   if (chartCategories) chartCategories.destroy();
@@ -1398,7 +1305,7 @@ function renderCategoriesBar(cats) {
 }
 
 function formatCrores(amount) {
-  if (amount === undefined || amount === null || isNaN(amount)) return "₹0.00";
+  if (amount === undefined || amount === null || isNaN(amount) || amount === "") return "₹0.00";
   const num = typeof amount === "string" ? parseFloat(amount) : amount;
   if (isNaN(num)) return "₹0.00";
   const abs = Math.abs(num);
