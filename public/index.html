@@ -879,7 +879,7 @@ function initTabs() {
 }
 
 function initListeners() {
-  document.getElementById("btn-refresh").addEventListener("click", loadData);
+  document.getElementById("btn-refresh").addEventListener("click", handleRefresh);
 
   document.getElementById("state-search").addEventListener("input", (e) => {
     filterStates(e.target.value);
@@ -953,6 +953,36 @@ function updateCurrencyHints() {
   document.getElementById("hint-disb").textContent = formatCrores(document.getElementById("sim-disbursed-amt").value);
 }
 
+async function handleRefresh() {
+  const btn = document.getElementById("btn-refresh");
+  if (!btn) return;
+  const originalHtml = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = `<span style="display:inline-block; animation: spin 0.6s linear infinite;">↻</span> Refreshing...`;
+  
+  try {
+    const ts = `?_t=${Date.now()}`;
+    await Promise.all([
+      fetchOverview(ts),
+      fetchStates(ts),
+      fetchMps(ts),
+      fetchCategories(ts)
+    ]);
+    btn.innerHTML = `✓ Refreshed`;
+    setTimeout(() => {
+      btn.innerHTML = originalHtml;
+      btn.disabled = false;
+    }, 1200);
+  } catch (err) {
+    console.error("Refresh error:", err);
+    btn.innerHTML = `Failed`;
+    setTimeout(() => {
+      btn.innerHTML = originalHtml;
+      btn.disabled = false;
+    }, 1500);
+  }
+}
+
 async function loadData() {
   try {
     await Promise.all([
@@ -966,8 +996,8 @@ async function loadData() {
   }
 }
 
-async function fetchOverview() {
-  const d = await fetchApi("/overview");
+async function fetchOverview(extra = "") {
+  const d = await fetchApi(`/overview${extra}`);
 
   document.getElementById("kpi-allocated").textContent = formatCrores(d.total_allocated);
   document.getElementById("kpi-disbursed").textContent = formatCrores(d.total_disbursed);
@@ -984,8 +1014,8 @@ async function fetchOverview() {
   renderRiskDoughnut(d.at_risk_count, d.total_mps - d.at_risk_count);
 }
 
-async function fetchStates() {
-  statesCache = await fetchApi("/states");
+async function fetchStates(extra = "") {
+  statesCache = await fetchApi(`/states${extra}`);
 
   const stateFilter = document.getElementById("mp-state-filter");
   const simState = document.getElementById("sim-state");
@@ -1032,7 +1062,7 @@ function filterStates(query) {
   renderStatesTable(statesCache.filter(s => (s.state || "").toLowerCase().includes(q)));
 }
 
-async function fetchMps() {
+async function fetchMps(extra = "") {
   const search = document.getElementById("mp-search").value;
   const state = document.getElementById("mp-state-filter").value;
   const risk = document.getElementById("mp-risk-filter").value;
@@ -1049,7 +1079,12 @@ async function fetchMps() {
   if (state && state !== "All") params.append("state", state);
   if (risk && risk !== "all") params.append("risk_filter", risk);
 
-  const r = await fetchApi(`/mps?${params.toString()}`);
+  let path = `/mps?${params.toString()}`;
+  if (extra) {
+    path += (path.includes('?') ? '&' : '?') + extra.replace('?', '');
+  }
+
+  const r = await fetchApi(path);
 
   renderMpsTable(r.data);
 
@@ -1129,8 +1164,8 @@ function closeModal() {
   document.getElementById("modal").classList.add("d-none");
 }
 
-async function fetchCategories() {
-  const cats = await fetchApi("/categories");
+async function fetchCategories(extra = "") {
+  const cats = await fetchApi(`/categories${extra}`);
 
   const tbody = document.getElementById("cat-tbody");
   if (!cats || !cats.length) {
