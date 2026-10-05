@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 from typing import Optional
 from fastapi import FastAPI, Query, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
@@ -16,8 +17,24 @@ logger = logging.getLogger("mplads_app")
 
 app = FastAPI(title="MPLADS Fund & Risk Intelligence", version="1.0.0")
 
+# Enable CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Robust Base Directory discovery (works locally and in serverless containers)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+if not os.path.exists(os.path.join(BASE_DIR, "data")):
+    parent = os.path.dirname(BASE_DIR)
+    if os.path.exists(os.path.join(parent, "data")):
+        BASE_DIR = parent
+
 STATIC_DIR = os.path.join(BASE_DIR, "static")
+PUBLIC_DIR = os.path.join(BASE_DIR, "public")
 MODEL_PATH = os.path.join(BASE_DIR, "models", "completion_risk_v1.pkl")
 PROCESSED_DF_PATH = os.path.join(BASE_DIR, "data", "processed", "df_cleaned.csv")
 CAT_SUMMARY_PATH = os.path.join(BASE_DIR, "data", "processed", "cat_summary.json")
@@ -43,12 +60,15 @@ def load_data_and_model():
 
     # 2. Load Model
     if os.path.exists(MODEL_PATH):
-        model = CompletionRiskModel.load(MODEL_PATH)
+        try:
+            model = CompletionRiskModel.load(MODEL_PATH)
+        except Exception as e:
+            logger.warning(f"Could not load saved model: {e}")
+            model = CompletionRiskModel(model="logistic_regression")
+            model.train(df)
     else:
         model = CompletionRiskModel(model="logistic_regression")
         model.train(df)
-        os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
-        model.save(MODEL_PATH)
 
     # 3. Ensure risk score exists
     if "risk_score" not in df.columns:
@@ -63,8 +83,11 @@ def load_data_and_model():
 
     # 5. Category Summary
     if os.path.exists(CAT_SUMMARY_PATH):
-        with open(CAT_SUMMARY_PATH, "r", encoding="utf-8") as f:
-            cat_summary = json.load(f)
+        try:
+            with open(CAT_SUMMARY_PATH, "r", encoding="utf-8") as f:
+                cat_summary = json.load(f)
+        except Exception:
+            cat_summary = []
     else:
         cat_summary = []
 
@@ -74,11 +97,6 @@ def load_data_and_model():
     DATA_CACHE["category_summary"] = cat_summary
     logger.info(f"Loaded {len(df)} MP records into memory cache.")
 
-@app.on_event("startup")
-def startup():
-    load_data_and_model()
-
-# Ensure data is ready for every request (Serverless Cold-Start Guard)
 def get_cache():
     if DATA_CACHE["df"] is None:
         load_data_and_model()
@@ -271,10 +289,13 @@ def predict_risk(req: PredictRequest):
         "risk_factors": risk_factors
     }
 
-os.makedirs(STATIC_DIR, exist_ok=True)
-app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+# Mount static and public if available
+if os.path.exists(STATIC_DIR):
+    app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 @app.get("/")
 def serve_index():
-    index_file = os.path.join(STATIC_DIR, "index.html")
-    return FileResponse(index_file)
+    for p in [os.path.join(PUBLIC_DIR, "index.html"), os.path.join(STATIC_DIR, "index.html")]:
+        if os.path.exists(p):
+            return FileResponse(p)
+    return {"message": "MPLADS Fund Intelligence API Live. Access /api/overview or /api/states."}
